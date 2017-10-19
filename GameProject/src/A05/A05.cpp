@@ -3,6 +3,9 @@
 #include <SDL_ttf.h>	//For TextFonts
 #include <SDL_mixer.h> // For Music & sounds (Audio)
 
+#include <time.h> //para los deltaTime
+#include<iostream>
+
 //StarUML para diagramas de estado
 
 //Game general information
@@ -10,6 +13,7 @@
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 #define FPS 60
+#define CLOCKS_PER_SEC ((clock_t)1000)
 
 int main(int, char*[]) {
 
@@ -25,7 +29,7 @@ int main(int, char*[]) {
 	// --- RENDERER ---
 	SDL_Renderer *renderer{ SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC) };
 	if (renderer == nullptr) throw "No es pot inicialitzar SDL_Renderer";
-# pragma region "Sprites"
+# pragma region "Sprites and textures"
 
 	// --- SPRITES ---
 	const Uint8 imgFlags{ IMG_INIT_PNG | IMG_INIT_JPG }; // Init of an image
@@ -99,28 +103,60 @@ int main(int, char*[]) {
 	Mix_PlayMusic(soundTrack, -1);
 #pragma endregion 
 
+	//--- TIME ---
 
+	clock_t lastTime = clock();
+	float timeDown = 10.0;
+	float deltaTime = 0;
+
+
+	enum class GameState { PLAY, EXIT, MENU };
 	// --- GAME LOOP ---
 	SDL_Event event;
-	bool isRunning = true;
-	while (isRunning) {
+	//bool isRunning = true;
+	GameState gamestate = GameState::MENU;
+	while (gamestate != GameState::EXIT) {
 		// HANDLE EVENTS
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
-			case SDL_QUIT:		isRunning = false; break;
-			case SDL_KEYDOWN:	if (event.key.keysym.sym == SDLK_ESCAPE) isRunning = false; break;
+			case SDL_QUIT:		gamestate = GameState::EXIT; break;
+			case SDL_KEYDOWN:	if (event.key.keysym.sym == SDLK_ESCAPE) gamestate = GameState::EXIT; break;
 			case SDL_MOUSEMOTION:
 				playerTarget.x = event.motion.x - 50;
 				playerTarget.y = event.motion.y - 50; 
 				break;
 			default:;
 			}
+
+			// PARA MANTENER ORDEN DE ESCENAS EN EL UPDATE
+			// Cada una de ellas tendra su propio control sobre si misma
+			//switch (gamestate)
+			//{
+			//case GameState::PLAY:
+			//	//Events
+			//	//Update
+			//	//Draw
+			//	break;
+			//case GameState::EXIT:
+			//	//Events
+			//	//Update
+			//	//Draw
+			//	break;
+			//case GameState ::MENU:
+			//	//Events
+			//	//Update
+			//	//Draw
+			//	break;
+			//default:
+			//	break;
+			//}
 		}
 
 		// UPDATE
 		//playerRect.x += (playerTarget.x - playerRect.x) / 10; // For smoth efect in the movement of the kintoun
 		//playerRect.y += (playerTarget.y - playerRect.y) / 10; // Idem 
 
+		//--- SpriteAnimation---
 		frameTime++;
 		if (FPS / frameTime <= 9)
 		{
@@ -130,6 +166,16 @@ int main(int, char*[]) {
 			{
 				spriteRect.x = 0;
 			}
+		}
+
+		//DeltaTime 
+		while (timeDown > 0) 
+		{
+			deltaTime = (clock() - lastTime);
+			lastTime = clock();
+			deltaTime /= CLOCKS_PER_SEC;
+			timeDown -= deltaTime;
+			std::cout << timeDown << std::endl;
 		}
 
 		// DRAW
