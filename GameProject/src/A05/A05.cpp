@@ -3,6 +3,8 @@
 #include <SDL_ttf.h>	//For TextFonts
 #include <SDL_mixer.h> // For Music & sounds (Audio)
 
+//StarUML para diagramas de estado
+
 //Game general information
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
@@ -39,14 +41,29 @@ int main(int, char*[]) {
 
 	// --- TEXT ---
 	if (TTF_Init() != 0) throw "No es pot inicialitzar SDL_TTF";
-	TTF_Font *font{ TTF_OpenFont("../../res/ttf/saiyan.ttf",100) }; // Crea fuente
-	if (font == nullptr)throw "Can't open the saiyan font";
-	SDL_Surface *tmpSurface{ TTF_RenderText_Blended(font,"My SDL Game",SDL_Color{255,150,0,255}) }; // Crea una surface
+	TTF_Font *font{ TTF_OpenFont("../../res/ttf/saiyan.ttf",100) }; 
+	TTF_Font *font2{ TTF_OpenFont("../../res/ttf/saiyan.ttf",100) }; // Crea fuente														// Crea fuente
+	if (font == nullptr || font2 == nullptr)throw "Can't open the saiyan font";
+	// ---MY SDL GAME---
+	SDL_Surface *tmpSurface{ TTF_RenderText_Blended(font,"My SDL Game",SDL_Color{255,150,0,1}) }; // Crea una surface
 	if (tmpSurface == nullptr) TTF_CloseFont(font),throw "Can't create the surface";
 	SDL_Texture *textTexture{ SDL_CreateTextureFromSurface(renderer,tmpSurface) }; //Crea una textura apartir de la surface con el texto
-	SDL_Rect textRect{ 100,50,tmpSurface->w,tmpSurface->h }; // El rectangulo de la textura con el w y h de la surface
-	SDL_FreeSurface(tmpSurface);
+	SDL_Rect textRect{ 150,50,tmpSurface->w,tmpSurface->h }; // El rectangulo de la textura con el w y h de la surface
+
+	//---PLay music---
+	SDL_Surface *tmpPlaySurface{ TTF_RenderText_Blended(font,"Play Music",SDL_Color{ 0,255,0,1 }) }; // Crea una surface
+	if (tmpPlaySurface == nullptr) TTF_CloseFont(font), throw "Can't create the surface";
+	SDL_Texture *textPlayTexture{ SDL_CreateTextureFromSurface(renderer,tmpPlaySurface) }; //Crea una textura apartir de la surface con el texto
+	SDL_Rect textPlayRect{ 200,150,tmpPlaySurface->w,tmpPlaySurface->h }; // El rectangulo de la textura con el w y h de la surface
+	SDL_FreeSurface(tmpPlaySurface);
 	TTF_CloseFont(font);
+
+	//---Stop music---
+	SDL_Surface *tmpSSurface{ TTF_RenderText_Blended(font2,"Stop Music",SDL_Color{ 255,0,0,1 }) }; // Crea una surface
+	if (tmpSSurface == nullptr) TTF_CloseFont(font), throw "Can't create the surface";
+	SDL_Texture *textStopTexture{ SDL_CreateTextureFromSurface(renderer,tmpSSurface) }; //Crea una textura apartir de la surface con el texto
+	SDL_Rect textStopRect{ 200,250,tmpSSurface->w,tmpSSurface->h }; // El rectangulo de la textura con el w y h de la surface
+	SDL_FreeSurface(tmpSSurface);
 
 	// --- AUDIO ---
 	const Uint8 mixFlags{ MIX_INIT_MP3 | MIX_INIT_OGG };
@@ -86,6 +103,8 @@ int main(int, char*[]) {
 		SDL_RenderCopy(renderer, bgTexture, nullptr, &bgRect);
 		SDL_RenderCopy(renderer, playerTexture, nullptr, &playerRect);
 		SDL_RenderCopy(renderer, textTexture, nullptr, &textRect);
+		SDL_RenderCopy(renderer, textPlayTexture, nullptr, &textPlayRect);
+		SDL_RenderCopy(renderer, textStopTexture, nullptr, &textStopRect);
 		//Animated Sprite
 		SDL_RenderPresent(renderer);
 
@@ -95,6 +114,8 @@ int main(int, char*[]) {
 	SDL_DestroyTexture(bgTexture);
 	SDL_DestroyTexture(playerTexture);
 	SDL_DestroyTexture(textTexture);
+	SDL_DestroyTexture(textPlayTexture);
+	SDL_DestroyTexture(textStopTexture);
 	Mix_CloseAudio();
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
