@@ -6,8 +6,10 @@
 //StarUML para diagramas de estado
 
 //Game general information
+
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
+#define FPS 60
 
 int main(int, char*[]) {
 
@@ -23,6 +25,7 @@ int main(int, char*[]) {
 	// --- RENDERER ---
 	SDL_Renderer *renderer{ SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC) };
 	if (renderer == nullptr) throw "No es pot inicialitzar SDL_Renderer";
+# pragma region "Sprites"
 
 	// --- SPRITES ---
 	const Uint8 imgFlags{ IMG_INIT_PNG | IMG_INIT_JPG }; // Init of an image
@@ -38,12 +41,26 @@ int main(int, char*[]) {
 
 	SDL_Rect playerTarget{ 0,0,100,100 };
 	// --- Animated Sprite ---
+	SDL_Texture *spriteTexture{ IMG_LoadTexture(renderer, "../../res/img/sp01.png") };
+	SDL_Rect spriteRect, spritePosition;
+	int textWidth, textHeigth, framewidth, frameheigth;
+	SDL_QueryTexture(spriteTexture, NULL, NULL, &textWidth, &textHeigth);
+	framewidth = textWidth / 6;
+	frameheigth = textHeigth / 1;
+	spritePosition.x = spritePosition.y = 0;
+	spriteRect.x = spriteRect.y = 0;
+	spritePosition.h = spriteRect.h = frameheigth;
+	spritePosition.w = spriteRect.w = framewidth;
+	int frameTime = 0;
+#pragma endregion 
+
+#pragma region "Text and fonts "
 
 	// --- TEXT ---
 	if (TTF_Init() != 0) throw "No es pot inicialitzar SDL_TTF";
 	TTF_Font *font{ TTF_OpenFont("../../res/ttf/saiyan.ttf",100) }; 
 	TTF_Font *font2{ TTF_OpenFont("../../res/ttf/saiyan.ttf",100) }; // Crea fuente														// Crea fuente
-	if (font == nullptr || font2 == nullptr)throw "Can't open the saiyan font";
+	if (font == nullptr )throw "Can't open the saiyan font";
 	// ---MY SDL GAME---
 	SDL_Surface *tmpSurface{ TTF_RenderText_Blended(font,"My SDL Game",SDL_Color{255,150,0,1}) }; // Crea una surface
 	if (tmpSurface == nullptr) TTF_CloseFont(font),throw "Can't create the surface";
@@ -56,15 +73,20 @@ int main(int, char*[]) {
 	SDL_Texture *textPlayTexture{ SDL_CreateTextureFromSurface(renderer,tmpPlaySurface) }; //Crea una textura apartir de la surface con el texto
 	SDL_Rect textPlayRect{ 200,150,tmpPlaySurface->w,tmpPlaySurface->h }; // El rectangulo de la textura con el w y h de la surface
 	SDL_FreeSurface(tmpPlaySurface);
-	TTF_CloseFont(font);
+	
 
 	//---Stop music---
-	SDL_Surface *tmpSSurface{ TTF_RenderText_Blended(font2,"Stop Music",SDL_Color{ 255,0,0,1 }) }; // Crea una surface
+	SDL_Surface *tmpSSurface{ TTF_RenderText_Blended(font,"Stop Music",SDL_Color{ 255,0,0,1 }) }; // Crea una surface
 	if (tmpSSurface == nullptr) TTF_CloseFont(font), throw "Can't create the surface";
 	SDL_Texture *textStopTexture{ SDL_CreateTextureFromSurface(renderer,tmpSSurface) }; //Crea una textura apartir de la surface con el texto
 	SDL_Rect textStopRect{ 200,250,tmpSSurface->w,tmpSSurface->h }; // El rectangulo de la textura con el w y h de la surface
 	SDL_FreeSurface(tmpSSurface);
 
+	TTF_CloseFont(font);
+
+#pragma endregion 
+
+#pragma region "Audio"
 	// --- AUDIO ---
 	const Uint8 mixFlags{ MIX_INIT_MP3 | MIX_INIT_OGG };
 
@@ -75,6 +97,8 @@ int main(int, char*[]) {
 	if (!soundTrack)throw "Can't load soundTrack";
 	Mix_VolumeMusic(MIX_MAX_VOLUME / 2);
 	Mix_PlayMusic(soundTrack, -1);
+#pragma endregion 
+
 
 	// --- GAME LOOP ---
 	SDL_Event event;
@@ -94,17 +118,32 @@ int main(int, char*[]) {
 		}
 
 		// UPDATE
-		playerRect.x += (playerTarget.x - playerRect.x) / 10; // For smoth efect in the movement of the kintoun
-		playerRect.y += (playerTarget.y - playerRect.y) / 10; // Idem 
+		//playerRect.x += (playerTarget.x - playerRect.x) / 10; // For smoth efect in the movement of the kintoun
+		//playerRect.y += (playerTarget.y - playerRect.y) / 10; // Idem 
+
+		frameTime++;
+		if (FPS / frameTime <= 9)
+		{
+			frameTime = 0;
+			spriteRect.x += framewidth;
+			if (spriteRect.x >= textWidth)
+			{
+				spriteRect.x = 0;
+			}
+		}
 
 		// DRAW
+		//---Sprite---
+		SDL_RenderCopy(renderer, spriteTexture, &spriteRect, &spritePosition);
 		//Background
 		SDL_RenderClear(renderer);
 		SDL_RenderCopy(renderer, bgTexture, nullptr, &bgRect);
-		SDL_RenderCopy(renderer, playerTexture, nullptr, &playerRect);
+		//SDL_RenderCopy(renderer, playerTexture, nullptr, &playerRect);
 		SDL_RenderCopy(renderer, textTexture, nullptr, &textRect);
 		SDL_RenderCopy(renderer, textPlayTexture, nullptr, &textPlayRect);
 		SDL_RenderCopy(renderer, textStopTexture, nullptr, &textStopRect);
+		SDL_RenderCopy(renderer, spriteTexture, &spriteRect, &spritePosition);
+
 		//Animated Sprite
 		SDL_RenderPresent(renderer);
 
