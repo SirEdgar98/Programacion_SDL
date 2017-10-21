@@ -19,8 +19,6 @@ int main(int, char*[]) {
 
 	// --- INIT ---
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) throw "No es pot inicialitzar SDL subsystems";
-	
-
 
 	// --- WINDOW ---
 	SDL_Window *window{ SDL_CreateWindow("SDL...", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN) };
@@ -32,7 +30,7 @@ int main(int, char*[]) {
 # pragma region "Sprites and textures"
 
 	// --- SPRITES ---
-	const Uint8 imgFlags{ IMG_INIT_PNG | IMG_INIT_JPG }; // Init of an image
+	const Uint8 imgFlags{ IMG_INIT_PNG | IMG_INIT_JPG }; // Init of image
 	if (!(IMG_Init(imgFlags)& imgFlags)) throw "Error : SDL_Image init"; // Error load throw 
 
 	SDL_Texture *bgTexture{ IMG_LoadTexture(renderer, "../../res/img/bg.jpg") }; //Init of a texture
@@ -169,26 +167,27 @@ int main(int, char*[]) {
 		}
 
 		//DeltaTime 
-		while (timeDown > 0) 
+	/*	while (timeDown > 0) 
 		{
 			deltaTime = (clock() - lastTime);
 			lastTime = clock();
 			deltaTime /= CLOCKS_PER_SEC;
 			timeDown -= deltaTime;
 			std::cout << timeDown << std::endl;
-		}
+		}*/
 
 		// DRAW
 		//---Sprite---
 		SDL_RenderCopy(renderer, spriteTexture, &spriteRect, &spritePosition);
 		//Background
-		SDL_RenderClear(renderer);
+		
 		SDL_RenderCopy(renderer, bgTexture, nullptr, &bgRect);
 		//SDL_RenderCopy(renderer, playerTexture, nullptr, &playerRect);
 		SDL_RenderCopy(renderer, textTexture, nullptr, &textRect);
 		SDL_RenderCopy(renderer, textPlayTexture, nullptr, &textPlayRect);
 		SDL_RenderCopy(renderer, textStopTexture, nullptr, &textStopRect);
 		SDL_RenderCopy(renderer, spriteTexture, &spriteRect, &spritePosition);
+		SDL_RenderClear(renderer);
 
 		//Animated Sprite
 		SDL_RenderPresent(renderer);
