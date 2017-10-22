@@ -60,8 +60,7 @@ int main(int, char*[]) {
 
 	// --- TEXT ---
 	if (TTF_Init() != 0) throw "No es pot inicialitzar SDL_TTF";
-	TTF_Font *font{ TTF_OpenFont("../../res/ttf/saiyan.ttf",100) }; 
-	TTF_Font *font2{ TTF_OpenFont("../../res/ttf/saiyan.ttf",100) }; // Crea fuente														// Crea fuente
+	TTF_Font *font{ TTF_OpenFont("../../res/ttf/saiyan.ttf",100) }; // Crea fuente
 	if (font == nullptr )throw "Can't open the saiyan font";
 	// ---MY SDL GAME---
 	SDL_Surface *tmpSurface{ TTF_RenderText_Blended(font,"My SDL Game",SDL_Color{255,150,0,1}) }; // Crea una surface

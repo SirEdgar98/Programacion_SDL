@@ -35,16 +35,61 @@ int main(int, char*[])
 	if (!(IMG_Init(imgFlags)& imgFlags)) throw "Error : SDL_Image init"; // Error load throw 
 
 	//PLAY SCENE IMAGES
-	//Backgrond
-	SDL_Texture *bgTexture{ IMG_LoadTexture(renderer, "../../GameProject/res/img/bg.jpg") }; //Init of a texture
-	if (bgTexture == nullptr)throw "Can't load the background image"; // Error load throw
-	SDL_Rect bgRect{ 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
-
+	//Backgrond Scene 1
+	SDL_Texture *bgTextureS1{ IMG_LoadTexture(renderer, "../../res/img/bg.jpg") }; //Init of a texture
+	if (bgTextureS1 == nullptr)throw "Can't load the background image"; // Error load throw
+	SDL_Rect bgRectS1{ 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+	//Background Scene 2
+	SDL_Texture *bgTextureS2{ IMG_LoadTexture(renderer, "../../res/img/bgCastle.jpg") }; //Init of a texture
+	if (bgTextureS2 == nullptr)throw "Can't load the background image"; // Error load throw
+	SDL_Rect bgRectS2{ 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 
 #pragma endregion
 
 	// ---Animated Sprites---
 	// ---Text---
+#pragma region "Text"
+	//Open Font
+	if (TTF_Init() != 0) throw "No es pot inicialitzar SDL_TTF";
+	TTF_Font *font{ TTF_OpenFont("../../res/ttf/saiyan.ttf",100) }; // Crea fuente
+	if (font == nullptr)throw "Can't open the saiyan font";
+
+	// Game name text
+	SDL_Surface *tmpNameSurface{ TTF_RenderText_Blended(font,"Gold Rush",SDL_Color{ 255,255,0,1 }) }; // Crea una surface
+	if (tmpNameSurface == nullptr) TTF_CloseFont(font), throw "Can't create the surface";
+	SDL_Texture *textNameTexture{ SDL_CreateTextureFromSurface(renderer,tmpNameSurface) }; //Crea una textura apartir de la surface con el texto
+	SDL_Rect textNameRect{ 225,75,tmpNameSurface->w,tmpNameSurface->h }; // El rectangulo de la textura con el w y h de la surface
+	SDL_FreeSurface(tmpNameSurface);
+
+	//Play Text
+	SDL_Surface *tmpPlaySurface{ TTF_RenderText_Blended(font,"Play",SDL_Color{ 0,255,0,1 }) }; // Crea una surface
+	if (tmpPlaySurface == nullptr) TTF_CloseFont(font), throw "Can't create the surface";
+	SDL_Texture *textPlayTexture{ SDL_CreateTextureFromSurface(renderer,tmpPlaySurface) }; //Crea una textura apartir de la surface con el texto
+	SDL_Rect textPlayRect{ 325,200,tmpPlaySurface->w,tmpPlaySurface->h}; // El rectangulo de la textura con el w y h de la surface
+	SDL_FreeSurface(tmpPlaySurface);
+	// Play TExt Color 2
+	SDL_Surface *tmpPlaySurface2{ TTF_RenderText_Blended(font,"Play",SDL_Color{ 153,255,153,1 }) }; // Crea una surface
+	if (tmpPlaySurface2 == nullptr) TTF_CloseFont(font), throw "Can't create the surface";
+	SDL_Texture *textPlayTexture2{ SDL_CreateTextureFromSurface(renderer,tmpPlaySurface2) }; //Crea una textura apartir de la surface con el texto
+	SDL_Rect textPlayRect2{ 325,200,tmpPlaySurface2->w,tmpPlaySurface2->h}; // El rectangulo de la textura con el w y h de la surface
+	SDL_FreeSurface(tmpPlaySurface2);
+
+	// Exit text
+	SDL_Surface *tmpStopSurface{ TTF_RenderText_Blended(font,"Exit",SDL_Color{ 255,0,0,1 }) }; // Crea una surface
+	if (tmpStopSurface == nullptr) TTF_CloseFont(font), throw "Can't create the surface";
+	SDL_Texture *textStopTexture{ SDL_CreateTextureFromSurface(renderer,tmpStopSurface) }; //Crea una textura apartir de la surface con el texto
+	SDL_Rect textStopRect{325,350,tmpStopSurface->w,tmpStopSurface->h }; // El rectangulo de la textura con el w y h de la surface
+	SDL_FreeSurface(tmpStopSurface);
+	// Exit text 2
+	SDL_Surface *tmpStopSurface2{ TTF_RenderText_Blended(font,"Exit",SDL_Color{ 255,102,102,1 }) }; // Crea una surface
+	if (tmpStopSurface2 == nullptr) TTF_CloseFont(font), throw "Can't create the surface";
+	SDL_Texture *textStopTexture2{ SDL_CreateTextureFromSurface(renderer,tmpStopSurface2) }; //Crea una textura apartir de la surface con el texto
+	SDL_Rect textStopRect2{ 325,350,tmpStopSurface2->w,tmpStopSurface2->h }; // El rectangulo de la textura con el w y h de la surface
+	SDL_FreeSurface(tmpStopSurface2);
+
+	TTF_CloseFont(font);
+
+#pragma endregion
 	// ---Audio---
 
 	enum class GameState { PLAY, EXIT, MENU };
@@ -52,6 +97,8 @@ int main(int, char*[])
 	SDL_Event event;
 	//bool isRunning = true;
 	GameState gamestate = GameState::MENU;
+	bool hoverPlay = false; 
+	bool hoverExit = false; 
 	while (gamestate != GameState::EXIT) {
 		// HANDLE EVENTS
 		while (SDL_PollEvent(&event)) {
@@ -59,6 +106,20 @@ int main(int, char*[])
 			case SDL_QUIT:		gamestate = GameState::EXIT; break;
 			case SDL_KEYDOWN:	if (event.key.keysym.sym == SDLK_ESCAPE) gamestate = GameState::EXIT; break;
 			case SDL_MOUSEMOTION:
+				if (event.motion.x > textPlayRect.x && event.motion.x < (textPlayRect.x + textPlayRect.h)
+					&& event.motion.y > textPlayRect.y && event.motion.y < (textPlayRect.y + textPlayRect.w))
+				{
+					std::cout << "Hover play" << std::endl; 
+					hoverPlay = true; 
+				}
+				else hoverPlay = false; 
+				if (event.motion.x > textStopRect.x && event.motion.x < (textStopRect.x + textStopRect.h)
+					&& event.motion.y > textStopRect.y && event.motion.y < (textStopRect.y + textStopRect.w))
+				{
+					std::cout << "Hover exit" << std::endl;
+					hoverExit = true; 
+				}
+				else hoverExit = false; 
 				break;
 			default:;
 			}
@@ -66,20 +127,50 @@ int main(int, char*[])
 			// PARA MANTENER ORDEN DE ESCENAS EN EL UPDATE
 			// Cada una de ellas tendra su propio control sobre si misma
 			//switch (gamestate)
-			
+		
 		}
+		//UPDATE
+		if (hoverPlay && event.type == SDL_MOUSEBUTTONDOWN)
+		{
+			std::cout << "Change Scene" << std::endl;
+			gamestate = GameState::PLAY;
+		}
+		if (hoverExit && event.type == SDL_MOUSEBUTTONDOWN)
+		{
+			std::cout << "Exit Game" << std::endl;
+		}
+
 		// DRAW
 		//backgroud
-		
-		SDL_RenderCopy(renderer, bgTexture, nullptr, &bgRect);
-
 		SDL_RenderClear(renderer);
+		if (gamestate == GameState::MENU)
+		{
+			SDL_RenderCopy(renderer, bgTextureS1, nullptr, &bgRectS1); //RenderBackgrounScene1
+			SDL_RenderCopy(renderer, textNameTexture, nullptr, &textNameRect); //RenderGameNameText
+			SDL_RenderCopy(renderer, textPlayTexture, nullptr, &textPlayRect); // RenderPlayText
+			if (hoverPlay) SDL_RenderCopy(renderer, textPlayTexture2, nullptr, &textPlayRect2); // RenderPlayTextInHover
+			SDL_RenderCopy(renderer, textStopTexture, nullptr, &textStopRect); //RenderStopText
+			if (hoverExit) SDL_RenderCopy(renderer, textStopTexture2, nullptr, &textStopRect2); //RenderStopTextInHover
+		}
+		else if (gamestate == GameState::PLAY)
+		{
+			SDL_RenderCopy(renderer, bgTextureS2, nullptr, &bgRectS2); //RenderBackgrounScene2
+		}
+		SDL_RenderPresent(renderer);
+
+		
 
 	}
 
 
 	//DESTROY
-	SDL_DestroyTexture(bgTexture);
+	SDL_DestroyTexture(textNameTexture);
+	SDL_DestroyTexture(textPlayTexture);
+	SDL_DestroyTexture(textStopTexture);
+	SDL_DestroyTexture(textPlayTexture2);
+	SDL_DestroyTexture(textStopTexture2);
+	SDL_DestroyTexture(bgTextureS1);
+	SDL_DestroyTexture(bgTextureS2);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	//QUIT
