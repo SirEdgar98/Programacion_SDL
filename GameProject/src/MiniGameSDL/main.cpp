@@ -11,6 +11,7 @@
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
+#define FPS 60
 
 #pragma endregion
 
@@ -47,6 +48,21 @@ int main(int, char*[])
 #pragma endregion
 
 	// ---Animated Sprites---
+#pragma region "Characters"
+	//Animation 
+	SDL_Texture *spriteTexture{ IMG_LoadTexture(renderer, "../../res/img/spCastle.png") };
+	SDL_Rect spriteRect, spritePosition;
+	int textWidth, textHeigth, framewidth, frameheigth;
+	SDL_QueryTexture(spriteTexture, NULL, NULL, &textWidth, &textHeigth);
+	framewidth = textWidth / 12;
+	frameheigth = textHeigth / 8;
+	spritePosition.x = spritePosition.y = 300;
+	spriteRect.x = spriteRect.y = 0;
+	spritePosition.h = spriteRect.h = frameheigth;
+	spritePosition.w = spriteRect.w = framewidth;
+	int frameTime = 0;
+
+#pragma endregion
 	// ---Text---
 #pragma region "Text"
 	//Open Font
@@ -99,28 +115,43 @@ int main(int, char*[])
 	GameState gamestate = GameState::MENU;
 	bool hoverPlay = false; 
 	bool hoverExit = false; 
+	bool moveUpPJ1 = false; 
+	bool moveDownPJ1 = false; 
+	bool moveRightPJ1 = false; 
+	bool moveLeftPJ1 = false; 
 	while (gamestate != GameState::EXIT) {
 		// HANDLE EVENTS
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
 			case SDL_QUIT:		gamestate = GameState::EXIT; break;
-			case SDL_KEYDOWN:	if (event.key.keysym.sym == SDLK_ESCAPE) gamestate = GameState::EXIT; break;
+			case SDL_KEYDOWN:	if (event.key.keysym.sym == SDLK_ESCAPE) gamestate = GameState::EXIT;
+								if (event.key.keysym.sym == SDLK_w) moveUpPJ1 = true;
+								if (event.key.keysym.sym == SDLK_s) moveDownPJ1 = true;
+								if (event.key.keysym.sym == SDLK_a) moveRightPJ1 = true;
+								if (event.key.keysym.sym == SDLK_d) moveLeftPJ1 = true;
+								else moveUpPJ1, moveDownPJ1, moveLeftPJ1, moveRightPJ1 = false; 
+								break;
 			case SDL_MOUSEMOTION:
 				if (event.motion.x > textPlayRect.x && event.motion.x < (textPlayRect.x + textPlayRect.h)
-					&& event.motion.y > textPlayRect.y && event.motion.y < (textPlayRect.y + textPlayRect.w))
+					&& event.motion.y > textPlayRect.y && event.motion.y < (textPlayRect.y + textPlayRect.w / 2))
 				{
 					std::cout << "Hover play" << std::endl; 
 					hoverPlay = true; 
 				}
 				else hoverPlay = false; 
 				if (event.motion.x > textStopRect.x && event.motion.x < (textStopRect.x + textStopRect.h)
-					&& event.motion.y > textStopRect.y && event.motion.y < (textStopRect.y + textStopRect.w))
+					&& event.motion.y > textStopRect.y && event.motion.y < (textStopRect.y + textStopRect.w / 2))
 				{
 					std::cout << "Hover exit" << std::endl;
 					hoverExit = true; 
 				}
 				else hoverExit = false; 
 				break;
+			case SDLK_w:
+					spritePosition.x++;
+			case SDLK_s:
+					spritePosition.x--; 
+					std::cout << " S presed"<< std::endl;
 			default:;
 			}
 
@@ -130,6 +161,7 @@ int main(int, char*[])
 		
 		}
 		//UPDATE
+		
 		if (hoverPlay && event.type == SDL_MOUSEBUTTONDOWN)
 		{
 			std::cout << "Change Scene" << std::endl;
@@ -139,6 +171,56 @@ int main(int, char*[])
 		{
 			std::cout << "Exit Game" << std::endl;
 		}
+
+		//--- SpriteAnimation---
+		//MoveUP
+		if (moveUpPJ1)
+		{
+			spritePosition.y -= 5;
+			frameTime++;
+			if (FPS / frameTime <= 9)
+			{
+				frameTime = 0;
+				spriteRect.x += framewidth;
+				if (spriteRect.x >= framewidth * 3)
+				{
+					spriteRect.x = 0;
+				}
+			}
+			moveUpPJ1 = false;
+		}
+		//MoveDown 
+		if (moveDownPJ1)
+		{
+			spritePosition.y += 5;
+			frameTime++;
+			if (FPS / frameTime <= 9)
+			{
+				frameTime = 0;
+				spriteRect.x += framewidth;
+				if (spriteRect.x >= framewidth * 3)
+				{
+					spriteRect.x = 0;
+				}
+			}
+			moveDownPJ1 = false; 
+		}
+
+		//MoveRight
+		if (moveRightPJ1)
+		{
+			spritePosition.x = spritePosition.x - 5; 
+			moveRightPJ1 = false; 
+		}
+
+		//MoveLeft
+		if (moveLeftPJ1)
+		{
+			spritePosition.x += 5;
+			moveLeftPJ1 = false; 
+		}
+		
+		
 
 		// DRAW
 		//backgroud
@@ -151,6 +233,8 @@ int main(int, char*[])
 			if (hoverPlay) SDL_RenderCopy(renderer, textPlayTexture2, nullptr, &textPlayRect2); // RenderPlayTextInHover
 			SDL_RenderCopy(renderer, textStopTexture, nullptr, &textStopRect); //RenderStopText
 			if (hoverExit) SDL_RenderCopy(renderer, textStopTexture2, nullptr, &textStopRect2); //RenderStopTextInHover
+
+			SDL_RenderCopy(renderer, spriteTexture,&spriteRect,&spritePosition); 
 		}
 		else if (gamestate == GameState::PLAY)
 		{
@@ -164,6 +248,7 @@ int main(int, char*[])
 
 
 	//DESTROY
+	SDL_DestroyTexture(spriteTexture); 
 	SDL_DestroyTexture(textNameTexture);
 	SDL_DestroyTexture(textPlayTexture);
 	SDL_DestroyTexture(textStopTexture);
