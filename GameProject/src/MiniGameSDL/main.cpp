@@ -56,6 +56,7 @@ int main(int, char*[])
 	// PLace in random positions 
 	srand(time(NULL));
 	
+	// Mejor aplicar los saquitos en un vector de std
 	SDL_Rect goldRect1{ rand() % SCREEN_WIDTH + 1 - GOLD_WIDTH,rand() % (SCREEN_HEIGHT - HORIZON) + HORIZON - GOLD_HEIGHT,GOLD_WIDTH,GOLD_HEIGHT };
 	SDL_Rect goldRect2{ rand() % SCREEN_WIDTH + 1 - GOLD_WIDTH,rand() % (SCREEN_HEIGHT - HORIZON) + HORIZON - GOLD_HEIGHT,GOLD_WIDTH,GOLD_HEIGHT };
 	SDL_Rect goldRect3{ rand() % SCREEN_WIDTH + 1 - GOLD_WIDTH,rand() % (SCREEN_HEIGHT - HORIZON) + HORIZON - GOLD_HEIGHT,GOLD_WIDTH,GOLD_HEIGHT };
@@ -124,16 +125,25 @@ int main(int, char*[])
 	SDL_Rect textStopRect2{ 325,350,tmpStopSurface2->w,tmpStopSurface2->h }; // El rectangulo de la textura con el w y h de la surface
 	SDL_FreeSurface(tmpStopSurface2);
 
+	//Points Player 
+	//SDL_Surface *PointsPj1Surface{ TTF_RenderText_Blended(font,"PJ 1: ",SDL_Color{ 255,102,102,1 }) }; // Crea una surface
+	//if (PointsPj1Surface == nullptr) TTF_CloseFont(font), throw "Can't create the surface";
+	//SDL_Texture *PointsPj1Surface{ SDL_CreateTextureFromSurface(renderer,PointsPj1Surface) }; //Crea una textura apartir de la surface con el texto
+	//SDL_Rect PointsRectPJ1{ 325,350,PointsPj1Surface->w,PointsPj1Surface->h }; // El rectangulo de la textura con el w y h de la surface
+	//SDL_FreeSurface(PointsPj1Surface);
+
 	TTF_CloseFont(font);
 
 #pragma endregion
 	// ---Audio---
 
 	enum class GameState { PLAY, EXIT, MENU };
+	enum class Movements { UP,DOWN,LEFT, RIGHT, NONE};
 	// --- GAME LOOP ---
 	SDL_Event event;
 	//bool isRunning = true;
 	GameState gamestate = GameState::MENU;
+	Movements move = Movements::NONE; 
 	bool hoverPlay = false;
 	bool hoverExit = false;
 
@@ -146,23 +156,35 @@ int main(int, char*[])
 	bool moveDownPJ2 = false;
 	bool moveRightPJ2 = false;
 	bool moveLeftPJ2 = false;
-
+	// for gold
+	int points = 0; 
+	bool GetGold = false; 
 	while (gamestate != GameState::EXIT) {
 		// HANDLE EVENTS
 		while (SDL_PollEvent(&event)) {
 			switch (event.type) {
 			case SDL_QUIT:		gamestate = GameState::EXIT; break;
 			case SDL_KEYDOWN:	if (event.key.keysym.sym == SDLK_ESCAPE) gamestate = GameState::EXIT;
-				if (event.key.keysym.sym == SDLK_w) moveUpPJ1 = true;
-				if (event.key.keysym.sym == SDLK_s) moveDownPJ1 = true;
-				if (event.key.keysym.sym == SDLK_d) moveRightPJ1 = true;
-				if (event.key.keysym.sym == SDLK_a) moveLeftPJ1 = true;
-				if (event.key.keysym.sym == SDLK_UP) moveUpPJ1 = true;
-				if (event.key.keysym.sym == SDLK_DOWN) moveDownPJ1 = true;
-				if (event.key.keysym.sym == SDLK_RIGHT) moveRightPJ1 = true;
-				if (event.key.keysym.sym == SDLK_LEFT) moveLeftPJ1 = true;
-
+				if (event.key.keysym.sym == SDLK_w) move = Movements::UP;
+					if (event.key.keysym.sym == SDLK_s) move = Movements::DOWN;
+					if (event.key.keysym.sym == SDLK_d) move = Movements::RIGHT;
+					if (event.key.keysym.sym == SDLK_a)move = Movements::LEFT;
+					if (event.key.keysym.sym == SDLK_UP)move = Movements::UP;
+					if (event.key.keysym.sym == SDLK_DOWN) move = Movements::DOWN;
+					if (event.key.keysym.sym == SDLK_RIGHT) move = Movements::RIGHT;
+					if (event.key.keysym.sym == SDLK_LEFT) move = Movements::LEFT;
+					break;
+			case SDL_KEYUP:
+					if (event.key.keysym.sym == SDLK_w) move = Movements::NONE;
+					if (event.key.keysym.sym == SDLK_s) move = Movements::NONE;
+					if (event.key.keysym.sym == SDLK_d) move = Movements::NONE;
+					if (event.key.keysym.sym == SDLK_a) move = Movements::NONE;
+					if (event.key.keysym.sym == SDLK_UP) move = Movements::NONE;
+					if (event.key.keysym.sym == SDLK_DOWN) move = Movements::NONE;
+					if (event.key.keysym.sym == SDLK_RIGHT) move = Movements::NONE;
+					if (event.key.keysym.sym == SDLK_LEFT) move = Movements::NONE;
 				break;
+
 			case SDL_MOUSEMOTION:
 				if (event.motion.x > textPlayRect.x && event.motion.x < (textPlayRect.x + textPlayRect.h)
 					&& event.motion.y > textPlayRect.y && event.motion.y < (textPlayRect.y + textPlayRect.w / 2))
@@ -190,22 +212,25 @@ int main(int, char*[])
 		}
 		//UPDATE
 
-		if (hoverPlay && event.type == SDL_MOUSEBUTTONDOWN)
+		if (gamestate == GameState::MENU)
 		{
-			std::cout << "Change Scene" << std::endl;
-			gamestate = GameState::PLAY;
-		}
-		if (hoverExit && event.type == SDL_MOUSEBUTTONDOWN)
-		{
-			std::cout << "Exit Game" << std::endl;
-			gamestate = GameState::EXIT;
+			if (hoverPlay && event.type == SDL_MOUSEBUTTONDOWN)
+			{
+				std::cout << "Change Scene" << std::endl;
+				gamestate = GameState::PLAY;
+			}
+			if (hoverExit && event.type == SDL_MOUSEBUTTONDOWN)
+			{
+				std::cout << "Exit Game" << std::endl;
+				gamestate = GameState::EXIT;
+			}
 		}
 		
 		//--- SpriteAnimation---
 		float Fila = frameheigth;
 		if (gamestate == GameState::PLAY) {
 			//MoveUP
-			if (moveUpPJ1 && spritePosition.y > HORIZON)
+			if (move == Movements::UP && spritePosition.y > HORIZON)
 			{
 				std::cout << "Arriba" << std::endl;
 				spritePosition.y -= 5;
@@ -222,10 +247,10 @@ int main(int, char*[])
 					}
 				}
 				frameheigth = Fila;
-				moveUpPJ1 = false;
+				
 			}
 			//MoveDown 
-			if (moveDownPJ1 && spritePosition.y < (SCREEN_HEIGHT - spriteRect.h))
+			if (move == Movements::DOWN && spritePosition.y < (SCREEN_HEIGHT - spriteRect.h))
 			{
 				std::cout << "Abajo" << std::endl;
 				spritePosition.y += 5;
@@ -242,11 +267,11 @@ int main(int, char*[])
 					}
 				}
 				frameheigth = Fila;
-				moveDownPJ1 = false;
+				
 			}
 
 			//MoveRight
-			if (moveRightPJ1 && spritePosition.x < (SCREEN_WIDTH - spriteRect.w))
+			if (move == Movements::RIGHT && spritePosition.x < (SCREEN_WIDTH - spriteRect.w))
 			{
 				std::cout << "Derecha" << std::endl;
 				spritePosition.x += 5;
@@ -263,11 +288,11 @@ int main(int, char*[])
 					}
 				}
 				frameheigth = Fila;
-				moveRightPJ1 = false;
+				
 			}
 
 			//MoveLeft
-			if (moveLeftPJ1 && spritePosition.x > 0 )
+			if (move == Movements::LEFT && spritePosition.x > 0)
 			{
 				std::cout << "Izquierda" << std::endl;
 				spritePosition.x -= 5;
@@ -284,10 +309,47 @@ int main(int, char*[])
 					}
 				}
 				frameheigth = Fila;
-				moveLeftPJ1 = false;
+				
 			}
 		}
 
+		//GoldColisions // Mejor usar funciones especificas para comprobar colisiones para reaprovehcar codigo + orientacion a objetos
+		if ((spritePosition.x > goldRect1.x && spritePosition.x < (goldRect1.x + goldRect1.h)) && (spritePosition.y > goldRect1.y) && (spritePosition.y < (goldRect1.y + goldRect1.w)))
+		{
+			points++;
+			goldRect1.x = rand() % SCREEN_WIDTH + 1 - GOLD_WIDTH;
+			goldRect1.y = rand() % (SCREEN_HEIGHT - HORIZON) + HORIZON - GOLD_HEIGHT, GOLD_WIDTH, GOLD_HEIGHT;
+			std::cout << points << std::endl;
+		}
+		if ((spritePosition.x > goldRect2.x && spritePosition.x < (goldRect2.x + goldRect2.h)) && (spritePosition.y > goldRect2.y) && (spritePosition.y < (goldRect2.y + goldRect2.w)))
+		{
+			points++;
+			goldRect2.x = rand() % SCREEN_WIDTH + 1 - GOLD_WIDTH;
+			goldRect2.y = rand() % (SCREEN_HEIGHT - HORIZON) + HORIZON - GOLD_HEIGHT, GOLD_WIDTH, GOLD_HEIGHT;
+			std::cout << points << std::endl;
+		}
+		if ((spritePosition.x > goldRect3.x && spritePosition.x < (goldRect3.x + goldRect3.h)) && (spritePosition.y > goldRect3.y) && (spritePosition.y < (goldRect3.y + goldRect3.w)))
+		{
+			points++;
+			goldRect3.x = rand() % SCREEN_WIDTH + 1 - GOLD_WIDTH;
+			goldRect3.y = rand() % (SCREEN_HEIGHT - HORIZON) + HORIZON - GOLD_HEIGHT, GOLD_WIDTH, GOLD_HEIGHT;
+			std::cout << points << std::endl;
+		}
+		if ((spritePosition.x > goldRect4.x && spritePosition.x < (goldRect4.x + goldRect4.h)) && (spritePosition.y > goldRect4.y) && (spritePosition.y < (goldRect4.y + goldRect4.w)))
+		{
+			points++;
+			goldRect4.x = rand() % SCREEN_WIDTH + 1 - GOLD_WIDTH;
+			goldRect4.y = rand() % (SCREEN_HEIGHT - HORIZON) + HORIZON - GOLD_HEIGHT, GOLD_WIDTH, GOLD_HEIGHT;
+			std::cout << points << std::endl;
+		}
+		if ((spritePosition.x > goldRect5.x && spritePosition.x < (goldRect5.x + goldRect5.h)) && (spritePosition.y > goldRect5.y) && (spritePosition.y < (goldRect5.y + goldRect5.w)))
+		{
+			points++;
+			goldRect5.x = rand() % SCREEN_WIDTH + 1 - GOLD_WIDTH;
+			goldRect5.y = rand() % (SCREEN_HEIGHT - HORIZON) + HORIZON - GOLD_HEIGHT, GOLD_WIDTH, GOLD_HEIGHT;
+			std::cout << points << std::endl;
+		}
+		
 
 		// DRAW
 		//backgroud
@@ -306,12 +368,13 @@ int main(int, char*[])
 		else if (gamestate == GameState::PLAY)
 		{
 			SDL_RenderCopy(renderer, bgTextureS2, nullptr, &bgRectS2); //RenderBackgrounScene2
-			SDL_RenderCopy(renderer, spriteTexture, &spriteRect, &spritePosition);
+			
 			SDL_RenderCopy(renderer, goldTexture, nullptr, &goldRect1);
 			SDL_RenderCopy(renderer, goldTexture, nullptr, &goldRect2);
 			SDL_RenderCopy(renderer, goldTexture, nullptr, &goldRect3);
 			SDL_RenderCopy(renderer, goldTexture, nullptr, &goldRect4);
 			SDL_RenderCopy(renderer, goldTexture, nullptr, &goldRect5);
+			SDL_RenderCopy(renderer, spriteTexture, &spriteRect, &spritePosition);
 		}
 		SDL_RenderPresent(renderer);
 
