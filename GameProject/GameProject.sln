@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.10
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HelloSDL", "src\HelloSDL\HelloSDL.vcxproj", "{E8DE8437-6382-4858-AE60-41CE14E4B794}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "A05", "src\A05\A05.vcxproj", "{34A27392-A799-4BB1-9770-FB2A18876827}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MiniGameSDL", "src\MiniGameSDL\MiniGameSDL.vcxproj", "{D46F8DFE-F7BD-489A-94CB-08DC82748A8E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BST(BinarySearchTree)", "BST(BinarySearchTree)\BST(BinarySearchTree).vcxproj", "{D92AB6B5-85B0-4CDB-9FFE-1F37E64616E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,14 @@ Global
 		{D46F8DFE-F7BD-489A-94CB-08DC82748A8E}.Release|x64.Build.0 = Release|x64
 		{D46F8DFE-F7BD-489A-94CB-08DC82748A8E}.Release|x86.ActiveCfg = Release|Win32
 		{D46F8DFE-F7BD-489A-94CB-08DC82748A8E}.Release|x86.Build.0 = Release|Win32
+		{D92AB6B5-85B0-4CDB-9FFE-1F37E64616E5}.Debug|x64.ActiveCfg = Debug|x64
+		{D92AB6B5-85B0-4CDB-9FFE-1F37E64616E5}.Debug|x64.Build.0 = Debug|x64
+		{D92AB6B5-85B0-4CDB-9FFE-1F37E64616E5}.Debug|x86.ActiveCfg = Debug|Win32
+		{D92AB6B5-85B0-4CDB-9FFE-1F37E64616E5}.Debug|x86.Build.0 = Debug|Win32
+		{D92AB6B5-85B0-4CDB-9FFE-1F37E64616E5}.Release|x64.ActiveCfg = Release|x64
+		{D92AB6B5-85B0-4CDB-9FFE-1F37E64616E5}.Release|x64.Build.0 = Release|x64
+		{D92AB6B5-85B0-4CDB-9FFE-1F37E64616E5}.Release|x86.ActiveCfg = Release|Win32
+		{D92AB6B5-85B0-4CDB-9FFE-1F37E64616E5}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
