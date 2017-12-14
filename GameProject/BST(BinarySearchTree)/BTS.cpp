@@ -65,9 +65,17 @@ void BST::PostOrder()
 	PostOrder(root);
 }
 
+int BST::Height()
+{
+	int current = 0; 
+	int total = Height(root,current);
+	return total; 
+}
+
 
 void BST::PreOrder(Node *node)
 {
+
 	if (node != nullptr)
 	{
 		std::cout << node->key << " ";
@@ -99,8 +107,22 @@ void BST::PostOrder(Node *node)
 	}
 }
 
+int BST::Height(Node *node, int altura)
+{
+	int alturaLeft = 0; 
+	int alturaRight = 0; 
+	if (node != nullptr)
+	{
+			alturaLeft = Height(node->left, altura) + 1; 
+			alturaRight = Height(node->right, altura) + 1;
+	}
+
+	if (alturaLeft > alturaRight) return alturaLeft; 
+	if (alturaRight > alturaLeft) return alturaRight;
+}
+
 bool BST::Exist(int key) {
 
 	return !(Search(key) == nullptr);
 
-};
+}

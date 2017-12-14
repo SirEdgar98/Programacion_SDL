@@ -13,6 +13,7 @@ public:
 	void InOrder();
 	void PostOrder();
 	bool Exist(int key);
+	int Height(); 
 
 private:
 	Node *root;
@@ -21,6 +22,7 @@ private:
 	void PreOrder(Node *node);
 	void InOrder(Node *node);
 	void PostOrder(Node *node);
+	int Height(Node *node, int altura); 
 
 
 };

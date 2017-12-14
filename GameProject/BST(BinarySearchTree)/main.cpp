@@ -14,12 +14,15 @@ int main()
 	BinaryTree->Insert(rand() % 100);
 	BinaryTree->Insert(rand() % 100);
 	BinaryTree->Insert(rand() % 100);
+	
 
 
 	//BinaryTree->PostOrder();
 	std::cout << std::endl; 
 	BinaryTree->PreOrder();
 	std::cout << std::endl; 
+
+	std::cout << BinaryTree->Height() << std::endl;
 	//BinaryTree->InOrder();
 	std::cout << std::endl;
 	
