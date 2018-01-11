@@ -8,18 +8,16 @@ class GraphD
 {
 public:
 	//Atributos
-	//Arco
-	std::pair<int, int> arc; 
 	//Nodo
 	struct node
 	{
-		int index;
-		int indentificador;
-		std::list<std::pair<node, node>> Adyacentes;
-	} Node;
+		int data; //Datos guardados en el nodo
+		std::list<node> Adyacentes; // Lista de nodos adyacentes
+	}; 
 	
 	//Vector Arcos
-	std::vector<node> *graph; 
+
+	std::vector<node> graph; 
 	//Metodos
 	GraphD(); // Vector de arcos
 	~GraphD();
