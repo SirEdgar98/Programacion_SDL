@@ -7,6 +7,14 @@ GraphD::GraphD()
 
 }
 
+GraphD::GraphD(std::list <std::pair <int, int>> arcs)
+{
+	for (std::list<std::pair<int, int>>::iterator it = arcs.begin(); it != arcs.end(); it++)
+	{
+		insert((*it).first, (*it).second); 
+	}
+}
+
 
 GraphD::~GraphD()
 {
@@ -40,25 +48,20 @@ void GraphD::insert(int first, int second)
 			}
 
 		}
-		if (graph[it].data == second)
-		{
-			existsNodeSecond = true;
-		}
-		if (!existsNodeSecond)
-		{
-			node n; 
-			n.data = second; 
-			graph.push_back(n);
-		}
-
+		
 	}
+	
 
+	
+	
 	if (!existsNodeFirst)
 	{
-		node n; 
-		n.data = first; 
+		node n1; 
+		n1.data = first; 
+		node n2;
+		n2.data = second;
 
-		graph.push_back(n); 
+		graph.push_back(n1); 
 
 		for (int it = 0; it != graph.size(); it++)
 		{
@@ -66,9 +69,30 @@ void GraphD::insert(int first, int second)
 			{
 				node n; 
 				n.data = second; 
-				graph.push_back(n); 
+				graph[it].Adyacentes.push_back(n); 
 			}
 		}
+		for (int it = 0; it < graph.size(); it++)
+		{
+			if (graph[it].data == n2.data)
+				existsNodeSecond = true; 
+		}
+		if (!existsNodeSecond)
+			graph.push_back(n2); 
 	}
 
+	for (int it = 0; it < graph.size(); it++)
+	{
+		if (graph[it].data == second)
+		{
+			existsNodeSecond = true;
+		}
+
+	}
+		if (!existsNodeSecond)
+		{
+			node n;
+			n.data = second;
+			graph.push_back(n);
+		}
 }

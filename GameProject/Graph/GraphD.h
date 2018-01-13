@@ -19,7 +19,8 @@ public:
 
 	std::vector<node> graph; 
 	//Metodos
-	GraphD(); // Vector de arcos
+	GraphD(); // Constructor vacio 
+	GraphD(std::list <std::pair <int,int>> arcs); // Vector de pares de nodos
 	~GraphD();
 
 	//Insertar un arco
@@ -27,13 +28,13 @@ public:
 	//Eliminar un arco
 	void erase(int first, int second); 
 	//Indice de un nodo
-	int NodeIndex(node *Node); 
+	int NodeIndex(node Node); 
 	//Camino entre un nodo y otro
-	bool paht(node *start, node *end); 
+	bool paht(node start, node end); 
 	//Circuito a partir de un nodo	
-	bool circuit(node *start, node *end);
+	bool circuit(node start, node end);
 	//Euleriano?
-	bool EulerGraph(GraphD *graph);
+	bool EulerGraph(GraphD graph);
 	//Imprimir los arcos
 	void printArcs(); 
 };
