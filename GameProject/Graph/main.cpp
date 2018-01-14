@@ -16,8 +16,20 @@ int main()
 	g.insert(2, 4);
 	g.insert(3, 5);
 	g.insert(4, 6);
+	g.insert(3, 7);
+	g.insert(4, 8); 
 
 	g2.insert(11, 9); 
+
+	std::cout << std::endl; 
+
+
+	int Index = g.NodeIndex(1); 
+	int index1 = g.NodeIndex(2); 
+
+
+	std::cout << g.path(1,5) << std::endl;
+
 
 	std::cout << "Bieeen" << std::endl; 
 	

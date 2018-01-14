@@ -28,13 +28,13 @@ public:
 	//Eliminar un arco
 	void erase(int first, int second); 
 	//Indice de un nodo
-	int NodeIndex(node Node); 
+	int NodeIndex(int node); 
 	//Camino entre un nodo y otro
-	bool paht(node start, node end); 
+	bool path(int NodeStart, int NodeEnd); 
 	//Circuito a partir de un nodo	
 	bool circuit(node start, node end);
 	//Euleriano?
-	bool EulerGraph(GraphD graph);
+	bool EulerGraph();
 	//Imprimir los arcos
 	void printArcs(); 
 };

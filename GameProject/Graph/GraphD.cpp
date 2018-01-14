@@ -11,7 +11,7 @@ GraphD::GraphD(std::list <std::pair <int, int>> arcs)
 {
 	for (std::list<std::pair<int, int>>::iterator it = arcs.begin(); it != arcs.end(); it++)
 	{
-		insert((*it).first, (*it).second); 
+		insert(it->first, it->second); 
 	}
 }
 
@@ -50,8 +50,6 @@ void GraphD::insert(int first, int second)
 		}
 		
 	}
-	
-
 	
 	
 	if (!existsNodeFirst)
@@ -95,4 +93,69 @@ void GraphD::insert(int first, int second)
 			n.data = second;
 			graph.push_back(n);
 		}
+}
+
+
+void GraphD::erase(int first, int second)
+{
+	for (int i = 0; i < graph.size(); i++)
+	{
+		if (graph[i].data == first)
+		{
+			for (std::list<node>::iterator itAd = graph[i].Adyacentes.begin(); itAd != graph[i].Adyacentes.end(); ++itAd)
+			{
+				if (itAd->data == second)
+				{
+					graph[i].Adyacentes.erase(itAd); 
+					break; 
+				}
+			}
+		}
+	}
+}
+
+int GraphD::NodeIndex(int node)
+{
+	for (int i = 0; i < graph.size(); ++i)
+	{
+		if (graph[i].data == node)
+		{
+			return graph[i].Adyacentes.size(); 
+			break; 
+		}
+	}
+}
+
+
+bool GraphD::path(int nodeStart, int nodeEnd)
+{
+	std::vector<node>tmpGraph(graph); 
+
+	for (int i = 0; i < tmpGraph.size(); i++)
+	{
+		if (tmpGraph[i].data == nodeStart)
+		{
+			for (std::list<node>::iterator itAd = tmpGraph[i].Adyacentes.begin(); itAd != tmpGraph[i].Adyacentes.end(); itAd++)
+			{
+				if (itAd->data == nodeEnd) return true; 
+				else path(itAd->data, nodeEnd); 
+			}
+		}
+	}
+	return false; 
+}
+
+bool GraphD::EulerGraph()
+{
+	int OddIndexNode = 0; 
+	for (int i = 0; i < graph.size(); i++)
+	{
+		if (NodeIndex(graph[i].data) % 2 != 0)
+		{
+			OddIndexNode++; 
+		}
+		if (OddIndexNode >= 2) return true; 
+	}
+
+	return false; 
 }
