@@ -129,7 +129,9 @@ int GraphD::NodeIndex(int node)
 
 bool GraphD::path(int nodeStart, int nodeEnd)
 {
+
 	std::vector<node>tmpGraph(graph); 
+	bool wayfound = false; 
 
 	for (int i = 0; i < tmpGraph.size(); i++)
 	{
@@ -137,12 +139,17 @@ bool GraphD::path(int nodeStart, int nodeEnd)
 		{
 			for (std::list<node>::iterator itAd = tmpGraph[i].Adyacentes.begin(); itAd != tmpGraph[i].Adyacentes.end(); itAd++)
 			{
-				if (itAd->data == nodeEnd) return true; 
+				if (itAd->data == nodeEnd)
+				{ 
+					wayfound = true; 
+					break; 
+				}
 				else path(itAd->data, nodeEnd); 
 			}
 		}
 	}
-	return false; 
+	if (!wayfound) return false; 
+	else if (wayfound) return true; 
 }
 
 bool GraphD::EulerGraph()
