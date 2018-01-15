@@ -72,23 +72,9 @@ int BST::Height()
 	return total; 
 }
 
-void BST::destructor(Node *node)
+int BST::GetNumberNodesR()
 {
-	if (node->left != nullptr)
-	{
-		destructor(node->left);
-		node->left = nullptr; 
-	}
-	if (node->right != nullptr)
-	{
-		destructor(node->right);
-		node->right = nullptr; 
-	}
-	if (node->left == nullptr && node->right == nullptr)
-	{
-		delete[] node; 
-		node = nullptr; 
-	};
+	return getNumberNodesRecursive(root); 
 }
 
 
@@ -140,6 +126,46 @@ int BST::Height(Node *node, int altura)
 	if (alturaRight > alturaLeft) return alturaRight;
 }
 
+
+int BST::getNumberNodesRecursive(Node *node)
+{
+
+	if (node == nullptr) return 0; 
+
+	int totalNodes = 0; 
+
+	if (node->left != nullptr)
+	{
+		totalNodes = getNumberNodesRecursive(node->left);
+		totalNodes++; 
+	}
+	if (node->right != nullptr)
+	{
+		totalNodes = getNumberNodesRecursive(node->right); 
+		totalNodes++;
+	}
+
+	return totalNodes; 
+}
+
+void BST::destructor(Node *node)
+{
+	if (node->left != nullptr)
+	{
+		destructor(node->left);
+		node->left = nullptr;
+	}
+	if (node->right != nullptr)
+	{
+		destructor(node->right);
+		node->right = nullptr;
+	}
+	if (node->left == nullptr && node->right == nullptr)
+	{
+		delete[] node;
+		node = nullptr;
+	};
+}
 bool BST::Exist(int key) {
 
 	return !(Search(key) == nullptr);

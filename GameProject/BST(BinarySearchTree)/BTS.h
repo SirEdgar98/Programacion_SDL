@@ -14,6 +14,7 @@ public:
 	void PostOrder();
 	bool Exist(int key);
 	int Height(); 
+	int GetNumberNodesR(); 
 
 private:
 	Node *root;
@@ -22,7 +23,9 @@ private:
 	void PreOrder(Node *node);
 	void InOrder(Node *node);
 	void PostOrder(Node *node);
-	int Height(Node *node, int altura); 
+	int Height(Node *node, int altura);
+	int getNumberNodesRecursive(Node *node);
+	int getNumberNodes(); 
 	void destructor(Node *node); 
 
 
