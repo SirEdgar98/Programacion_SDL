@@ -4,7 +4,7 @@ int main()
 {
 	BST *BinaryTree = new BST; 
 
-	BinaryTree->Insert(11);
+	
 	BinaryTree->Insert(10);
 	BinaryTree->Insert(9);
 	BinaryTree->Insert(8);
@@ -16,6 +16,9 @@ int main()
 	BinaryTree->Insert(2);
 	BinaryTree->Insert(1);
 	BinaryTree->Insert(0);
+	BinaryTree->Insert(20);
+	BinaryTree->Insert(21);
+	BinaryTree->Insert(22);
 
 
 	
@@ -28,6 +31,7 @@ int main()
 
 	
 	std::cout << BinaryTree->Height() << std::endl;
+
 	std::cout << BinaryTree->GetNumberNodesR() << std::endl; 
 	//BinaryTree->~BST(); 
 	//BinaryTree->InOrder();

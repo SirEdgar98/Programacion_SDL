@@ -23,7 +23,7 @@ private:
 	void PreOrder(Node *node);
 	void InOrder(Node *node);
 	void PostOrder(Node *node);
-	int Height(Node *node, int altura);
+	int Height(Node *node);
 	int getNumberNodesRecursive(Node *node);
 	int getNumberNodes(Node *node); 
 	void destructor(Node *node); 

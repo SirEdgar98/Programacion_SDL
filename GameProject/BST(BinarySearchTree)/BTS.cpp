@@ -67,8 +67,7 @@ void BST::PostOrder()
 
 int BST::Height()
 {
-	int current = 0; 
-	int total = Height(root,current);
+	int total = Height(root);
 	return total; 
 }
 
@@ -112,18 +111,19 @@ void BST::PostOrder(Node *node)
 	}
 }
 
-int BST::Height(Node *node, int altura)
+int BST::Height(Node *node)
 {
 	int alturaLeft = 0; 
 	int alturaRight = 0; 
+
 	if (node != nullptr)
 	{
-			alturaLeft = Height(node->left, altura) + 1; 
-			alturaRight = Height(node->right, altura) + 1;
+			alturaLeft = Height(node->left) + 1; 
+			alturaRight = Height(node->right) + 1 ;
 	}
 
-	if (alturaLeft > alturaRight) return alturaLeft; 
-	if (alturaRight > alturaLeft) return alturaRight;
+	if (alturaLeft >= alturaRight) return alturaLeft; 
+	if (alturaRight >= alturaLeft) return alturaRight;
 }
 
 
@@ -147,10 +147,10 @@ int BST::getNumberNodesRecursive(Node *node)
 
 	return totalNodes; 
 }
-int BST::getNumberNodes(Node *node)
-{
-
-}
+//int BST::getNumberNodes(Node *node)
+//{
+//	
+//}
 
 void BST::destructor(Node *node)
 {
