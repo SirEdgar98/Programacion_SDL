@@ -67,8 +67,7 @@ void BST::PostOrder()
 
 int BST::Height()
 {
-	int total = Height(root);
-	return total; 
+	return Height(root);
 }
 
 int BST::GetNumberNodesR()
