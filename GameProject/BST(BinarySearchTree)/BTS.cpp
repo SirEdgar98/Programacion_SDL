@@ -147,6 +147,10 @@ int BST::getNumberNodesRecursive(Node *node)
 
 	return totalNodes; 
 }
+int BST::getNumberNodes(Node *node)
+{
+
+}
 
 void BST::destructor(Node *node)
 {
