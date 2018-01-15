@@ -144,6 +144,7 @@ bool GraphD::path(int nodeStart, int nodeEnd)
 				if (itAd->data == nodeEnd)
 				{
 					std::cout << "Camino encontrado" << std::endl; 
+					UsedNodes.clear(); 
 					return true; 
 					break; 
 				}
