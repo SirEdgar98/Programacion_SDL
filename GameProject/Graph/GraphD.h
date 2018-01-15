@@ -18,6 +18,7 @@ public:
 	//Vector Arcos
 
 	std::vector<node> graph; 
+	std::vector<node> UsedNodes; 
 	//Metodos
 	GraphD(); // Constructor vacio 
 	GraphD(std::list <std::pair <int,int>> arcs); // Vector de pares de nodos

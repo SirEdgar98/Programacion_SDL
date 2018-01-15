@@ -23,6 +23,7 @@ private:
 	void InOrder(Node *node);
 	void PostOrder(Node *node);
 	int Height(Node *node, int altura); 
+	void destructor(Node *node); 
 
 
 };

@@ -129,28 +129,50 @@ int GraphD::NodeIndex(int node)
 
 bool GraphD::path(int nodeStart, int nodeEnd)
 {
+	std::cout << "Entra" << std::endl; 
+	bool usedNode = false; 
 
-	std::vector<node>tmpGraph(graph); 
-	bool wayfound = false; 
+	if (nodeStart == nodeEnd) return true; 
 
-	for (int i = 0; i < tmpGraph.size(); i++)
+	for (int i = 0; i < graph.size(); i++)
 	{
-		if (tmpGraph[i].data == nodeStart)
+		if (graph[i].data == nodeStart)
 		{
-			for (std::list<node>::iterator itAd = tmpGraph[i].Adyacentes.begin(); itAd != tmpGraph[i].Adyacentes.end(); itAd++)
+			std::cout << "Buscando en nodo::" << graph[i].data << std::endl; 
+			for (std::list<node>::iterator itAd = graph[i].Adyacentes.begin(); itAd != graph[i].Adyacentes.end(); itAd++)
 			{
 				if (itAd->data == nodeEnd)
-				{ 
-					wayfound = true; 
+				{
+					std::cout << "Camino encontrado" << std::endl; 
+					return true; 
 					break; 
 				}
-				else path(itAd->data, nodeEnd); 
+				for (int i = 0; i < UsedNodes.size(); i++)
+				{
+					if (itAd->data == UsedNodes[i].data)
+					{
+						std::cout << "Nodo::" << itAd->data << "Ya esta usado" << std::endl; 
+						usedNode = true; 
+					}
+				}
+				if (!usedNode)
+				{
+					UsedNodes.push_back(*itAd); 
+					if ((path(itAd->data, nodeEnd)) == true) return true;
+					std::cout << "Sale" << std::endl; 
+				}
+				usedNode = false; 
 			}
 		}
 	}
-	if (!wayfound) return false; 
-	else if (wayfound) return true; 
+
+	std::cout << "Camino no encontrado" << std::endl;
+	UsedNodes.clear();
+	return false; 
+	
 }
+
+
 
 bool GraphD::EulerGraph()
 {

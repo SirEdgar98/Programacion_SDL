@@ -18,8 +18,10 @@ int main()
 	g.insert(4, 6);
 	g.insert(3, 7);
 	g.insert(4, 8); 
-
-	g2.insert(11, 9); 
+	g.insert(7, 9); 
+	g.insert(8, 10); 
+	g.insert(1, 10); 
+	g.insert(9, 2); 
 
 	std::cout << std::endl; 
 
@@ -28,7 +30,7 @@ int main()
 	int index1 = g.NodeIndex(2); 
 
 
-	std::cout << g.path(1,5) << std::endl;
+	std::cout << g.path(7,3) << std::endl;
 
 
 	std::cout << "Bieeen" << std::endl; 

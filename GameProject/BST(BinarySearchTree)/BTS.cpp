@@ -3,9 +3,9 @@
 
 BST::BST() { root = nullptr; };
 
-BST::~BST() {
-	//TODO
-
+BST::~BST()
+{
+	destructor(root); 
 };
 
 Node*  BST::Search(int key) {
@@ -70,6 +70,25 @@ int BST::Height()
 	int current = 0; 
 	int total = Height(root,current);
 	return total; 
+}
+
+void BST::destructor(Node *node)
+{
+	if (node->left != nullptr)
+	{
+		destructor(node->left);
+		node->left = nullptr; 
+	}
+	if (node->right != nullptr)
+	{
+		destructor(node->right);
+		node->right = nullptr; 
+	}
+	if (node->left == nullptr && node->right == nullptr)
+	{
+		delete[] node; 
+		node = nullptr; 
+	};
 }
 
 
